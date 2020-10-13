@@ -41,8 +41,8 @@ import amodeus.amod.ext.Static;
         ScenarioOptions scenarioOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());
 
         /** load options */
-        Config config = ConfigUtils.loadConfig(scenarioOptions.getSimulationConfigName());
-        System.out.println("MATSim config file: " + scenarioOptions.getSimulationConfigName());
+        Config config = ConfigUtils.loadConfig(scenarioOptions.getPreparerConfigName());
+        System.out.println("MATSim config file: " + scenarioOptions.getPreparerConfigName());
         final File outputSubDirectory = new File(config.controler().getOutputDirectory()).getAbsoluteFile();
         if (!outputSubDirectory.isDirectory())
             throw new RuntimeException("output directory: " + outputSubDirectory.getAbsolutePath() + " not found.");

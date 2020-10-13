@@ -10,6 +10,7 @@ import amodeus.amodeus.util.math.GlobalAssert;
 import amodeus.amodtaxi.scenario.ScenarioCreation;
 import amodeus.amodtaxi.scenario.chicago.ChicagoScenarioCreation;
 import amodeus.amodtaxi.scenario.sanfrancisco.SanFranciscoScenarioCreation;
+import amodeus.amodtaxi.scenario.toronto.TorontoScenarioCreation;
 
 /** provides a quick access to the implementations of {@link ScenarioCreation}:
  * {@link ChicagoScenarioCreation}
@@ -25,6 +26,12 @@ public enum ScenarioCreator {
         @Override
         public ScenarioCreation in(File workingDirectory) throws Exception {
             return SanFranciscoScenarioCreation.of(workingDirectory, (File) null).get(0);
+        }
+    },
+    TORONTO {
+        @Override
+        public ScenarioCreation in(File workingDirectory) throws Exception {
+            return TorontoScenarioCreation.in(workingDirectory);
         }
     };
 
@@ -45,6 +52,7 @@ public enum ScenarioCreator {
         scenarios.put("sanfrancisco", ScenarioCreator.SAN_FRANCISCO);
         scenarios.put("san_francisco", ScenarioCreator.SAN_FRANCISCO);
         scenarios.put("san-francisco", ScenarioCreator.SAN_FRANCISCO);
+        scenarios.put("toronto", ScenarioCreator.TORONTO);
 
         ScenarioCreation scenario = scenarios.get(args[0].toLowerCase()).in(MultiFileTools.getDefaultWorkingDirectory());
         GlobalAssert.that(scenario.directory().exists());

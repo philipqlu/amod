@@ -3,9 +3,14 @@ package amodeus.amod.ext;
 
 import amodeus.amodeus.data.LocationSpec;
 import amodeus.amodeus.data.ReferenceFrame;
+import amodeus.amodtaxi.scenario.toronto.TorontoReferenceFrames;
+
 import org.matsim.api.core.v01.Coord;
 
 /* package */ enum UserLocationSpecs implements LocationSpec {
+    TORONTO( //
+            TorontoReferenceFrames.TORONTO, //
+            new Coord(-79.393473, 43.656633)), //
     SANFRANCISCO( //
             UserReferenceFrames.SANFRANCISCO, //
             new Coord(-122.4363005, 37.7511686)), //

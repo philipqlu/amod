@@ -81,3 +81,7 @@ fabric.properties
 
 # temporary
 virtualNetwork/*
+
+# output files
+bin/
+created_scenarios/

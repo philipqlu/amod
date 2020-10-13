@@ -51,7 +51,7 @@
 		</repository>
 		<repository>
 			<id>amodtaxi-mvn-repo</id>
-			<url>https://raw.github.com/amodeus-science/amodtaxi/mvn-repo/</url>
+			<url>${user.home}/.m2/repository/amodeus/amodtaxi/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

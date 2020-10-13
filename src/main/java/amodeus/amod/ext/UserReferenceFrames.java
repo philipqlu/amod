@@ -13,6 +13,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
     IDENTITY( //
             new IdentityTransformation(), //
             new IdentityTransformation()), //
+    TORONTO(
+    		new GeotoolsTransformation("EPSG:4326", "WGS84"), //
+            new GeotoolsTransformation("WGS84", "EPSG:4326")),//
     SANFRANCISCO( //
             new GeotoolsTransformation("EPSG:26743", "WGS84"), //
             new GeotoolsTransformation("WGS84", "EPSG:26743"), //

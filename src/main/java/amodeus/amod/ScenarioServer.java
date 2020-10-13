@@ -5,6 +5,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Objects;
 
+import amodeus.amodeus.dispatcher.AdaptiveRealTimeRebalancingPolicy;
+import amodeus.amodeus.dispatcher.FeedforwardFluidicRebalancingPolicy;
+import amodeus.amodeus.dispatcher.DriveByDispatcher;
 import amodeus.amodeus.analysis.Analysis;
 import amodeus.amodeus.data.LocationSpec;
 import amodeus.amodeus.data.ReferenceFrame;
@@ -33,6 +36,7 @@ import org.matsim.core.scenario.ScenarioUtils;
 
 import amodeus.amod.analysis.CustomAnalysis;
 import amodeus.amod.dispatcher.DemoDispatcher;
+import amodeus.amod.dispatcher.DemoDispatcherShared;
 import amodeus.amod.ext.Static;
 import amodeus.amod.generator.DemoGenerator;
 
@@ -55,14 +59,14 @@ import amodeus.amod.generator.DemoGenerator;
         Static.setup();
         System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
 
-        /** working directory and options */
+        /** Load the properties file */
         ScenarioOptions scenarioOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());
 
         /** set to true in order to make server wait for at least 1 client, for
-         * instance viewer client, for fals the ScenarioServer starts the simulation
+         * instance viewer client, for false the ScenarioServer starts the simulation
          * immediately */
         boolean waitForClients = scenarioOptions.getBoolean("waitForClients");
-        File configFile = new File(scenarioOptions.getSimulationConfigName());
+        File configFile = new File(scenarioOptions.getPreparerConfigName());
 
         /** geographic information */
         LocationSpec locationSpec = scenarioOptions.getLocationSpec();
@@ -73,6 +77,7 @@ import amodeus.amod.generator.DemoGenerator;
         SimulationServer.INSTANCE.setWaitForClients(waitForClients);
 
         /** load MATSim configs - including av.xml configurations, load routing packages */
+        System.out.println("Loading config");
         GlobalAssert.that(configFile.exists());
         DvrpConfigGroup dvrpConfigGroup = new DvrpConfigGroup();
         dvrpConfigGroup.setTravelTimeEstimationAlpha(0.05);
@@ -93,6 +98,7 @@ import amodeus.amod.generator.DemoGenerator;
         String outputdirectory = config.controler().getOutputDirectory();
 
         /** load MATSim scenario for simulation */
+        System.out.println("Loading scenario");
         Scenario scenario = ScenarioUtils.loadScenario(config);
         AddCoordinatesToActivities.run(scenario);
         Network network = scenario.getNetwork();
@@ -108,6 +114,15 @@ import amodeus.amod.generator.DemoGenerator;
          * in class
          * DemoDispatcher, as long as the dispatcher was not selected in the file av.xml, it is not
          * used in the simulation. */
+//        controller.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                AmodeusUtils.registerDispatcherFactory(binder(), //
+//                		FeedforwardFluidicRebalancingPolicy.class.getSimpleName(),
+//                		FeedforwardFluidicRebalancingPolicy.Factory.class);
+//            }
+//        });
+        
         controller.addOverridingModule(new AbstractModule() {
             @Override
             public void install() {
@@ -115,6 +130,14 @@ import amodeus.amod.generator.DemoGenerator;
                         DemoDispatcher.class.getSimpleName(), DemoDispatcher.Factory.class);
             }
         });
+//        
+//        controller.addOverridingModule(new AbstractModule() {
+//            @Override
+//            public void install() {
+//                AmodeusUtils.registerDispatcherFactory(binder(), //
+//                        DemoDispatcherShared.class.getSimpleName(), DemoDispatcherShared.Factory.class);
+//            }
+//        });
 
         /** With the subsequent lines, additional user-defined initial placement logic called
          * generator is added,
@@ -149,7 +172,7 @@ import amodeus.amod.generator.DemoGenerator;
         /** run simulation */
         controller.run();
 
-        /** close port for visualizaiton */
+        /** close port for visualization */
         SimulationServer.INSTANCE.stopAccepting();
 
         /** perform analysis of simulation, a demo of how to add custom analysis methods

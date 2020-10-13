@@ -45,18 +45,15 @@ import amodeus.amod.ext.Static;
         Static.setup();
         System.out.println("\n\n\n" + Static.glpInfo() + "\n\n\n");
 
-        /** The {@link ScenarioOptions} contain amodeus specific options. Currently there
-         * are 3 options files: - MATSim configurations (config.xml) - AV package
-         * configurations (av.xml) - AMoDeus configurations (AmodeusOptions.properties).
-         * 
-         * The number of configs is planned to be reduced in subsequent refactoring
-         * steps. */
+        /** The {@link ScenarioOptions} loads 2 options files:
+         * MATSim/AV configurations (config.xml) and
+		 * AMoDeus configurations (AmodeusOptions.properties).
+         *  */
         ScenarioOptions scenarioOptions = new ScenarioOptions(workingDirectory, ScenarioOptionsBase.getDefault());
         Static.setLPtoNone(workingDirectory);
 
         /** MATSim config */
         AmodeusConfigGroup avConfigGroup = new AmodeusConfigGroup();
-        // avConfigGroup.addMode(new AmodeusModeConfig("av"));
         Config config = ConfigUtils.loadConfig(scenarioOptions.getPreparerConfigName(), avConfigGroup);
         Scenario scenario = ScenarioUtils.loadScenario(config);
         GeneratorConfig genConfig = avConfigGroup.getModes().values().iterator().next().getGeneratorConfig();
@@ -70,10 +67,8 @@ import amodeus.amod.ext.Static;
         /** adaption of MATSim population, e.g., radius cutting */
         Population population = scenario.getPopulation();
 
-        /** this reduced the population size to allow for faster simulation initially,
-         * remove to have bigger simualation */
-        TheApocalypse.reducesThe(population).toNoMoreThan(2000);
-
+        // Population cutting
+        TheApocalypse.reducesThe(population).toNoMoreThan(scenarioOptions.getMaxPopulationSize());
         long apoSeed = 1234;
         PopulationPreparer.run(network, population, scenarioOptions, config, apoSeed);
 
